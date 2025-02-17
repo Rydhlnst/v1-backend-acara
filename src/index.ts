@@ -1,15 +1,34 @@
 // Entry Point Backend -- Diawal dari sini backendnya
-
+import bodyParser from "body-parser";
 import express from "express";
-import router from "./routes/api"
+import router from "./routes/api";
+import db from "./utils/database";
 
-const app = express();
-const PORT = 3000;
+async function init() {
+    try {
+        // Koneksi ke database
+        const result = await db();
+        console.log("Database status : ", result);
 
-// Middleware
-// Dengan pola /api akan mengarah ke router
-app.use("/api", router);
+        // Inisialisasi express
+        const app = express();
 
-app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-})
+        // Membaca data JSON
+        app.use(bodyParser.json());
+
+        const PORT = 3000;
+
+        // Middleware
+        // Dengan pola /api akan mengarah ke router
+        app.use("/api", router);
+
+        app.listen(PORT, () => {
+            console.log(`Server is running on http://localhost:${PORT}`);
+        })
+        console.log("Database Connected");
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+init();

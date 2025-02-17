@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-export default {
+export default  {
     // 2 Argumen
     dummy(req: Request, res: Response) {
         res.status(200).json({
