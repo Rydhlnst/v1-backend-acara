@@ -3,6 +3,8 @@ import bodyParser from "body-parser";
 import express from "express";
 import router from "./routes/api";
 import db from "./utils/database";
+import docs from "./docs/route";
+import cors from "cors";
 
 async function init() {
     try {
@@ -12,6 +14,9 @@ async function init() {
 
         // Inisialisasi express
         const app = express();
+
+        // Cors
+        app.use(cors());
 
         // Membaca data JSON
         app.use(bodyParser.json());
@@ -28,6 +33,7 @@ async function init() {
         // Middleware
         // Dengan pola /api akan mengarah ke router
         app.use("/api", router);
+        docs(app);
 
         app.listen(PORT, () => {
             console.log(`Server is running on http://localhost:${PORT}`);
