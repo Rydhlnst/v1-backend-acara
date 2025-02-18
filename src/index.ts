@@ -18,6 +18,13 @@ async function init() {
 
         const PORT = 3000;
 
+        app.get("/", (req, res) => {
+            res.status(200).json({
+                message: "Hello World",
+                data: null
+            })
+        });
+
         // Middleware
         // Dengan pola /api akan mengarah ke router
         app.use("/api", router);
