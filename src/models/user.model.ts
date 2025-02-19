@@ -1,5 +1,7 @@
 import mongoose, { mongo } from "mongoose";
 import { encrypt } from "../utils/encryption";
+import {renderMailHtml, sendMail} from "../utils/mail/mail";
+import { CLIENT_HOST, EMAIL_SMPT_USER } from "../utils/env";
 
 export interface IUser {
     fullName: string,
@@ -9,7 +11,8 @@ export interface IUser {
     role: string,
     profilePicture: string,
     isActive: boolean,
-    activationCode: string
+    activationCode: string,
+    createdAt?: string;
 }
 
 // Schema User
@@ -59,6 +62,34 @@ UserSchema.pre("save", function(next) {
     user.password = encrypt(user.password);
     next();
 });
+
+UserSchema.post("save", async function(doc, next) {
+    try {
+        const user = doc;
+        console.log("Send Mail to: ", user.email);
+
+        const contentMail = await renderMailHtml("registration-success.ejs", {
+            userName: user.userName,
+            fullName: user.fullName,
+            email: user.email,
+            createdAt: user.createdAt,
+            activationLink: `${CLIENT_HOST}/auth/activation?code=${user.activationCode}}`
+        });
+
+        await sendMail({
+            from: EMAIL_SMPT_USER,
+            to: user.email,
+            subject: "Activation Account",
+            html: contentMail,
+        })
+    } catch (error) {
+        console.log(error)
+    } finally {
+        next();
+    }
+    
+    
+})
 
 // Menghapus Password dari Response
 UserSchema.methods.toJSON = function() {
