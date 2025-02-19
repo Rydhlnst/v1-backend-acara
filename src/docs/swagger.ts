@@ -27,6 +27,16 @@ const doc = {
             LoginRequest: {
                 identifier: "rydhlnst",
                 password: "12341234",
+            },
+            RegisterRequest: {
+                fullName: "Riyadhul Jinan",
+                userName: "deezyan",
+                email: "deezyan@yopmail.com",
+                password: "!2341234",
+                confirmPassword: "12341234"
+            },
+            ActivationRequest: {
+                code: "abcdef"
             }
         }
     }

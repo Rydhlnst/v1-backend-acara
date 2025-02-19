@@ -24,14 +24,27 @@ const registerValidateSchema = Yup.object({
     fullName: Yup.string().required(),
     userName: Yup.string().required(),
     email: Yup.string().email().required(),
-    password: Yup.string().required(),
+    password: Yup.string().required().min(8, "Password must be at least 6 characters").test("at-least-one-uppercase-letter", "Contains at least one uppercase letter", (value) => {
+        if (!value) return false;
+        const regex = /^(?=.*[A-Z])/;
+        return regex.test(value);
+
+    }).test("at-least-one-number", "Contains at least one number", (value) => {
+        if (!value) return false;
+        const regex = /^(?=.*\d)/;
+        return regex.test(value);
+        
+    }),
     confirmPassword: Yup.string().oneOf([Yup.ref("password"), ""], "Password must match")
 })
 
 export default {
     async register(req: Request, res: Response) {
         /**
-         #swagger.tags = ['Auth']
+        #swagger.tags = ['Auth']
+        #swagger.requestBody = {
+            required: true,
+            schema: {$ref: "#/components/schemas/RegisterRequest"}}
          */
         const {fullName, userName, email, password, confirmPassword} = req.body as unknown as TRegister;
 
@@ -72,6 +85,7 @@ export default {
         try {
             // Ambil Data User berdasarkan identifier -> email / username
             const userByIdentifier = await UserModel.findOne({
+                // Apakah identifier cocok dengan email / userName
                 $or: [
                     {
                         email: identifier
@@ -79,7 +93,9 @@ export default {
                     {
                         userName: identifier
                     }
-                ]
+                ],
+                // Hanya user yang telah aktif saja yang bisa login
+                isActive: true,
             });
 
             if(!userByIdentifier) {
@@ -139,5 +155,44 @@ export default {
                 data: null
             })
         }
-    }
+    },
+
+    async activation(req: Request, res: Response) {
+        /**
+        #swagger.tags = ['Auth']
+        #swagger.requestBody = {
+            required: true,
+            schema: {$ref: "#/components/schemas/ActivationRequest"}}
+         */
+            try {
+                // Ensure you're getting the code from the request body
+                const { code } = req.body as { code: string };
+            
+                // Find and update the user
+                const user = await UserModel.findOneAndUpdate(
+                  { activationCode: code },
+                  { isActive: true },
+                  { new: true }
+                );
+            
+                // If the user is found and updated successfully, send the response
+                if (user) {
+                  res.status(200).json({
+                    message: "User successfully activated",
+                    data: user,
+                  });
+                } else {
+                  res.status(404).json({
+                    message: "User not found or invalid activation code",
+                    data: null,
+                  });
+                }
+              } catch (error) {
+                // Handle any errors
+                const err = error as Error;
+                res.status(400).json({
+                  message: err.message,
+                  data: null,
+                });
+              }}
 }
