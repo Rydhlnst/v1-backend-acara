@@ -4,7 +4,8 @@ import { Request, Response } from "express";
 import UserModel from "../models/user.model";
 import { encrypt } from "../utils/encryption";
 import { generateToken } from "../utils/jwt";
-import { IReqUser } from "../middleware/auth.middleware";
+import { IReqUser } from "../utils/interface";
+import response from "../utils/response";
 
 type TRegister = {
     fullName: string;
@@ -57,18 +58,10 @@ export default {
         // Proses PROMISE
         try {
             await registerValidateSchema.validate({fullName, userName, email, password, confirmPassword})
-            res.status(200).json({
-                message: "Register Success",
-                data: {
-                    result
-                }
-            })
+            response.success(res, result, "Success Registration")
         } catch (error) {
             const err = error as unknown as Error;
-            res.status(400).json({
-                message: err.message,
-                data: null
-            })
+            response.error(res, error, "Failed Registration")
         }
 
     },
@@ -99,18 +92,12 @@ export default {
             });
 
             if(!userByIdentifier) {
-                return res.status(403).json({
-                    message: "User Not Found",
-                    data: null
-                })
+                return response.unauthorized(res, "User not found")
             }
             // Validasi password
             const validatePassword: boolean = encrypt(password) === userByIdentifier.password;
             if(!validatePassword) {
-                return res.status(403).json({
-                    message: "Password Not Match",
-                    data: null
-                })
+                return response.unauthorized(res, "User not found")
             }
 
             const token = generateToken({
@@ -118,17 +105,11 @@ export default {
                 role: userByIdentifier.role,
             })
 
-            res.status(200).json({
-                message: "Login Success",
-                data: token
-            })
+            response.success(res, token, "Login Success")
 
         } catch (error) {
             const err = error as unknown as Error;
-            res.status(400).json({
-                message: err.message,
-                data: null
-            })
+            response.error(res, error, "Login failed")
         }
     },
 
@@ -143,17 +124,11 @@ export default {
             const user = req.user;
             const result = await UserModel.findById(user?.id);
 
-            res.status(200).json({
-                message: "Me Success",
-                data: result
-            })
+            response.success(res, result, "Success get user profile")
 
         } catch (error) {
             const err = error as unknown as Error;
-            res.status(400).json({
-                message: err.message,
-                data: null
-            })
+            response.error(res, err, "Failed get user file")
         }
     },
 
@@ -177,22 +152,11 @@ export default {
             
                 // If the user is found and updated successfully, send the response
                 if (user) {
-                  res.status(200).json({
-                    message: "User successfully activated",
-                    data: user,
-                  });
-                } else {
-                  res.status(404).json({
-                    message: "User not found or invalid activation code",
-                    data: null,
-                  });
-                }
+                  response.success(res, user, "Successfully activated")
+                } 
               } catch (error) {
                 // Handle any errors
                 const err = error as Error;
-                res.status(400).json({
-                  message: err.message,
-                  data: null,
-                });
+                response.error(res, error, "User not found or User failed activated")
               }}
 }
