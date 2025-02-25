@@ -37,6 +37,28 @@ const doc = {
             },
             ActivationRequest: {
                 code: "abcdef"
+            },
+            CreateCategoryRequest: {
+                name: "",
+                description: "",
+                icon: ""
+            },
+            RemoveMediaRequest: {
+                fileUrl : ""
+            },
+            CreateEventRequest: {
+                name: "",
+                banner: "",
+                category: "",
+                description: "",
+                startDate: "yyyy-mm-dd hh:mm:ss",
+                endDate: "",
+                location: {
+                    region: "region id",
+                    coordinates: [0, 0]
+                },
+                isOnline: false,
+                isFeatured: true,
             }
         }
     }
