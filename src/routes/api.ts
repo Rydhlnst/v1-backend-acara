@@ -7,6 +7,7 @@ import { ROLES } from "../utils/constant";
 import mediaMiddleware from "../middleware/media.middleware";
 import mediaController from "../controller/media.controller";
 import categoryController from "../controller/category.controller";
+import regionController from "../controller/region.controller";
 
 const router = express.Router();
 
@@ -30,6 +31,13 @@ router.post("/media/upload-single");
 router.get("/category/:id", categoryController.findOne);
 router.put("/category/:id",[authMiddleware, aclMiddleware([ROLES.ADMIN])], categoryController.update);
 router.delete("/category/:id",[authMiddleware, aclMiddleware([ROLES.ADMIN])], categoryController.remove);
+
+router.get("/regions", regionController.getAllProvinces);
+router.get("/regions/:id/province", regionController.getProvince);
+router.get("/regions/:id/regency", regionController.getRegency);
+router.get("/regions/:id/regency", regionController.getRegency);
+router.get("/regions/:id/village", regionController.getVillage);
+router.get("/regions-search", regionController.findByCity);
 
 // Mengupload jelas menggunakan HTTP method post
 router.post("/media/upload-single", [
