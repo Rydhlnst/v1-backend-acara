@@ -74,15 +74,15 @@ router.delete("/category/:id",[authMiddleware, aclMiddleware([ROLES.ADMIN])], ca
 );
 
 router.post("/events", [authMiddleware, aclMiddleware([ROLES.ADMIN])] ,eventController.create
-    /*
+     /*
     #swagger.tags = ["Events"]
     #swagger.security = [{
         "bearerAuth": {}
     }]
-    #swagger.requestBody: {
-        required: true
+    #swagger.requestBody = {
+        required: true,
         schema: {
-            $ref: "#/components/schemas/CreateEventRequest"
+        $ref: "#/components/schemas/CreateEventRequest"
         }
     }
     */
@@ -100,15 +100,15 @@ router.get("/events/:id", eventController.findOne
 
 );
 router.put("/events/:id", eventController.update
-    /*
+     /*
     #swagger.tags = ["Events"]
     #swagger.security = [{
         "bearerAuth": {}
     }]
-    #swagger.requestBody: {
-        required: true
+    #swagger.requestBody = {
+        required: true,
         schema: {
-            $ref: "#/components/schemas/CreateEventRequest"
+        $ref: "#/components/schemas/CreateEventRequest"
         }
     }
     */
@@ -197,22 +197,21 @@ router.post("/media/upload-multiple", [
     #swagger.security = [{
         "bearerAuth": {}
     }]
-        #swagger.requestBody = {
+       #swagger.requestBody = {
         required: true,
         content: {
-        "multipart/form-data": {
+            "multipart/form-data": {
             schema: {
-                type: "object",
-                properties" {
-                    files: {
-                    type: "array",
-                    items: {
+                type: "array",
+                properties: {
+                files: {
                     type: "string",
-                    format: "binary"}}
-                }
+                    format: "binary"
+                }}
             }
-        }}
+            }
         }
+    }
     */
 );
 router.delete("media/remove", [
@@ -222,7 +221,7 @@ router.delete("media/remove", [
 /*
     #swagger.tags = ["Media"]
     #swagger.security = [{
-        "bearerAuth"
+        "bearerAuth": {}
     }]
     #swagger.requestBody = [{
         required: true,

@@ -311,7 +311,21 @@
             "bearerAuth": {}
           }
         ],
-        "requestBody": {}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEventRequest"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEventRequest"
+              }
+            }
+          }
+        }
       },
       "get": {
         "tags": [
@@ -395,7 +409,21 @@
             "bearerAuth": {}
           }
         ],
-        "requestBody": {}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEventRequest"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateEventRequest"
+              }
+            }
+          }
+        }
       },
       "delete": {
         "tags": [
@@ -601,7 +629,22 @@
             "bearerAuth": {}
           }
         ],
-        "requestBody": {}
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "array",
+                "properties": {
+                  "files": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            }
+          }
+        }
       }
     },
     "media/remove": {
@@ -615,7 +658,11 @@
             "description": ""
           }
         },
-        "security": [],
+        "security": [
+          {
+            "bearerAuth": {}
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
