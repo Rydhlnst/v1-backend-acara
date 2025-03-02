@@ -191,7 +191,7 @@ router.post("/media/upload-multiple", [
     authMiddleware,
     aclMiddleware([ROLES.ADMIN, ROLES.MEMBER]),
     mediaMiddleware.multiple("files")
-], mediaController.remove
+], mediaController.multiple
     /*
     #swagger.tags = ["Media"]
     #swagger.security = [{
