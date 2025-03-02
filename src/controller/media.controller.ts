@@ -11,7 +11,8 @@ export default {
         try {
             const result = await uploader.uploadSingle(req.file as Express.Multer.File);
             response.success(res, result, "Success upload a file")
-        } catch {
+        } catch (error) {
+            console.error("Upload error:", error);
             response.error(res, null, "Failed to upload file")
         }
     },
