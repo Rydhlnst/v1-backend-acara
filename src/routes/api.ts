@@ -214,7 +214,7 @@ router.post("/media/upload-multiple", [
     }
     */
 );
-router.delete("media/remove", [
+router.delete("/media/remove", [
     authMiddleware,
     aclMiddleware([ROLES.ADMIN, ROLES.MEMBER]),
 ], mediaController.remove
